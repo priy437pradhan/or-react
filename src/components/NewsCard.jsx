@@ -10,7 +10,7 @@ const NewsCard = ({ item }) => {
 
   return (
     <div
-      className={`or-pp-card    overflow-hidden ${item.type === 'featured' ? 'bg-gray-50' : 'bg-white'}`}
+      className={`or-pp-card rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow duration-300 mb-6 ${item.type === 'featured' ? 'bg-gray-50' : 'bg-white'}`}
       onClick={handleCardClick}
     >
       {item.type === 'video' ? (

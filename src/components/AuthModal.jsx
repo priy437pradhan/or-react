@@ -61,7 +61,7 @@ export const AuthModal = () => {
             <h2 className="text-2xl font-bold">Welcome to BlogSpace</h2>
             <button
               onClick={(e) => {
-                e.stopPropagation(); 
+                e.stopPropagation(); // Prevent accidental modal expansion
                 closeModal();
               }}
               className="text-gray-500 hover:text-gray-700"
