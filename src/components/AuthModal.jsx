@@ -58,7 +58,7 @@ export const AuthModal = () => {
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Welcome to BlogSpace</h2>
+            <h2 className="text-2xl font-bold">Welcome to OR</h2>
             <button
               onClick={(e) => {
                 e.stopPropagation(); // Prevent accidental modal expansion
