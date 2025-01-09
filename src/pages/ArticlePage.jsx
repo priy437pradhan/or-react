@@ -9,8 +9,8 @@ const ArticlePage = () => {
   const [relatedArticles, setRelatedArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_KEY = '058dfeda8d7841a79a7efa0429c1518a';
-  const BASE_URL = 'https://newsapi.org/v2';
+  const API_KEY = import.meta.env.VITE_API_KEY;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
     const fetchData = async () => {

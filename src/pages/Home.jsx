@@ -11,8 +11,8 @@ const Home = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const API_KEY = '058dfeda8d7841a79a7efa0429c1518a';
-  const BASE_URL = 'https://newsapi.org/v2';
+  const API_KEY = import.meta.env.VITE_API_KEY;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   useEffect(() => {
     const fetchNews = async () => {
