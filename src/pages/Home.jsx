@@ -3,6 +3,81 @@ import NewsCard from '../components/NewsCard';
 import Header from '../components/Header';
 import {AuthModal} from '../components/AuthModal'; 
 
+// Static news data
+const STATIC_NEWS = {
+  featured: [
+    {
+      type: 'video',
+      title: 'SpaceX Successfully Launches New Satellite Constellation',
+      description: 'In a groundbreaking mission, SpaceX has successfully deployed a new constellation of satellites designed to provide global internet coverage.',
+      imageUrl: '/api/placeholder/800/450',
+      date: '2025-01-09',
+      readTime: 5
+    },
+    {
+      type: 'standard',
+      title: 'Breakthrough in Quantum Computing Announced',
+      description: 'Scientists have achieved a major milestone in quantum computing, demonstrating sustained quantum coherence for over an hour.',
+      imageUrl: '/api/placeholder/800/450',
+      date: '2025-01-09',
+      readTime: 4
+    },
+    {
+      type: 'standard',
+      title: 'New AI Model Shows Promise in Medical Diagnosis',
+      description: 'A revolutionary AI system has demonstrated unprecedented accuracy in early disease detection across multiple medical conditions.',
+      imageUrl: '/api/placeholder/800/450',
+      date: '2025-01-08',
+      readTime: 6
+    }
+  ],
+  quick: [
+    {
+      title: 'Twitter Introduces New Privacy Features',
+      date: '2025-01-09'
+    },
+    {
+      title: 'Apple Announces Revolutionary AR Glasses',
+      date: '2025-01-09'
+    },
+    {
+      title: '5G Network Coverage Reaches Global Milestone',
+      date: '2025-01-08'
+    },
+    {
+      title: 'Electric Vehicle Sales Surpass Traditional Cars',
+      date: '2025-01-08'
+    },
+    {
+      title: 'New Renewable Energy Storage Solution Unveiled',
+      date: '2025-01-07'
+    }
+  ],
+  trending: [
+    {
+      title: 'Artificial Intelligence Revolutionizes Healthcare',
+      description: 'New AI systems are transforming how doctors diagnose and treat patients.',
+      imageUrl: '/api/placeholder/400/400',
+      date: '2025-01-09',
+      readTime: 3
+    },
+    {
+      title: 'Worlds First Quantum Network Goes Live',
+      description: 'Scientists successfully establish the first quantum internet connection.',
+      imageUrl: '/api/placeholder/400/400',
+      date: '2025-01-09',
+      readTime: 4
+    },
+    {
+      title: 'Revolutionary Battery Technology Announced',
+      description: 'New battery design promises 10x capacity and faster charging.',
+      imageUrl: '/api/placeholder/400/400',
+      date: '2025-01-08',
+      readTime: 3
+    }
+  ]
+};
+
 const Home = () => {
   const [featuredNews, setFeaturedNews] = useState([]);
   const [quickNews, setQuickNews] = useState([]);
@@ -11,64 +86,22 @@ const Home = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const API_KEY = import.meta.env.VITE_API_KEY;
-  const BASE_URL = import.meta.env.VITE_BASE_URL;
-
   useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const featuredResponse = await fetch(
-          `${BASE_URL}/top-headlines?country=us&pageSize=10&apiKey=${API_KEY}`
-        );
-        const featuredData = await featuredResponse.json();
-        
-        const quickResponse = await fetch(
-          `${BASE_URL}/everything?q=technology&pageSize=8&sortBy=publishedAt&apiKey=${API_KEY}`
-          
-        );
-        const quickData = await quickResponse.json();
-        
-        const trendingResponse = await fetch(
-          `${BASE_URL}/top-headlines?country=us&category=technology&pageSize=10&apiKey=${API_KEY}`
-        );
-        const trendingData = await trendingResponse.json();
-
-        setFeaturedNews(featuredData.articles.map((article, index) => ({
-          type: index === 0 ? 'video' : 'standard',
-          title: article.title,
-          description: article.description,
-          imageUrl: article.urlToImage || '/api/placeholder/800/450',
-          date: new Date(article.publishedAt).toLocaleDateString(),
-          readTime: Math.ceil(article.description?.split(' ').length / 200) || 5
-        })));
-
-        setQuickNews(quickData.articles.map(article => ({
-          title: article.title,
-          date: new Date(article.publishedAt).toLocaleDateString()
-        })));
-
-        setTrendingNews(trendingData.articles.map(article => ({
-          title: article.title,
-          description: article.description,
-          imageUrl: article.urlToImage || '/api/placeholder/400/400',
-          date: new Date(article.publishedAt).toLocaleDateString(),
-          readTime: Math.ceil(article.description?.split(' ').length / 200) || 3
-        })));
-
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching news:', error);
-        setLoading(false);
-      }
+    // Simulate API loading delay
+    const loadData = async () => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setFeaturedNews(STATIC_NEWS.featured);
+      setQuickNews(STATIC_NEWS.quick);
+      setTrendingNews(STATIC_NEWS.trending);
+      setLoading(false);
     };
 
-    fetchNews();
+    loadData();
   }, []);
 
   // Check for existing authentication on component mount
   useEffect(() => {
     const checkAuth = () => {
-      // Check localStorage or your auth service
       const token = localStorage.getItem('authToken');
       setIsAuthenticated(!!token);
     };
@@ -83,7 +116,6 @@ const Home = () => {
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
     setShowAuthModal(false);
-    // Store auth token or user data
     localStorage.setItem('authToken', 'dummy-token');
   };
 
@@ -116,8 +148,8 @@ const Home = () => {
         </div>
 
         {/* Middle Column - Featured Stories */}
-        <div className="w-full lg:w-1/2 ">
-        <h2 className="font-semibold text-lg mb-4">Trending Now</h2>
+        <div className="w-full lg:w-1/2">
+          <h2 className="font-semibold text-lg mb-4">Featured Stories</h2>
           {featuredNews.map((item, index) => (
             <NewsCard 
               key={index} 

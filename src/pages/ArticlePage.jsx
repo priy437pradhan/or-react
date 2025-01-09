@@ -3,46 +3,87 @@ import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import { Clock, Calendar, Share2, Bookmark } from 'lucide-react';
 
+// Static article data
+const STATIC_ARTICLES = {
+  'breakthrough-quantum-computing': {
+    title: 'Breakthrough in Quantum Computing Announced',
+    publishedAt: '2025-01-09T10:30:00Z',
+    readTime: 8,
+    author: 'Dr. Sarah Chen',
+    source: {
+      name: 'Tech Insights Daily'
+    },
+    urlToImage: '/api/placeholder/800/400',
+    description: 'Scientists have achieved a major milestone in quantum computing, demonstrating sustained quantum coherence for over an hour.',
+    content: `In a groundbreaking development that promises to revolutionize the field of quantum computing, researchers at the Quantum Research Institute have achieved unprecedented success in maintaining quantum coherence for extended periods. This breakthrough could pave the way for practical quantum computers that can solve complex problems far beyond the capabilities of classical computers.
+
+    The team, led by Dr. Sarah Chen, used a novel approach involving superconducting circuits and innovative error correction techniques. "What makes this achievement particularly exciting is that we've managed to maintain quantum coherence for over an hour, which is orders of magnitude longer than previous attempts," explains Dr. Chen.
+
+    The implications of this breakthrough are far-reaching, potentially impacting fields from cryptography to drug discovery. The ability to maintain quantum states for longer periods could accelerate the development of practical quantum computers, bringing us closer to solving complex problems in climate modeling, financial analysis, and artificial intelligence.
+
+    Industry experts are already calling this development a "quantum leap" forward. Major tech companies have expressed interest in incorporating these findings into their quantum computing research programs. The team's findings have been published in the prestigious journal "Quantum Science Today" and are currently undergoing peer review.
+
+    The research was funded by a combination of government grants and private sector investments, highlighting the growing interest in quantum computing technology. The team is now working on scaling up their system and exploring potential commercial applications.`,
+  },
+  'ai-medical-breakthrough': {
+    title: 'New AI Model Shows Promise in Medical Diagnosis',
+    publishedAt: '2025-01-08T14:15:00Z',
+    readTime: 6,
+    author: 'Michael Rodriguez',
+    source: {
+      name: 'Health & Technology Review'
+    },
+    urlToImage: '/api/placeholder/800/400',
+    description: 'A revolutionary AI system has demonstrated unprecedented accuracy in early disease detection across multiple medical conditions.',
+    content: `Artificial Intelligence continues to transform healthcare with a new breakthrough in medical diagnosis. A team of researchers has developed an AI system that can detect early signs of multiple diseases with remarkable accuracy, potentially revolutionizing preventive healthcare.
+
+    The AI system, developed through a collaboration between medical researchers and computer scientists, has shown particular promise in detecting early signs of cardiovascular disease, certain types of cancer, and neurological conditions. Early trials indicate an accuracy rate exceeding 95% in preliminary screenings.
+
+    "What sets this system apart is its ability to analyze multiple data points simultaneously, including imaging results, patient history, and real-time health metrics," explains lead researcher Dr. Jennifer Kumar. The AI can process this information much faster than traditional diagnostic methods, potentially saving crucial time in treatment decisions.
+
+    Healthcare providers participating in the initial trials have reported significant improvements in their diagnostic workflows. The system not only helps in early detection but also assists in determining the most effective treatment paths for individual patients.
+
+    The research team is now working on expanding the system's capabilities and preparing for larger-scale clinical trials. They anticipate that this technology could be implemented in hospitals within the next two years, pending regulatory approvals.`,
+  }
+};
+
+const RELATED_ARTICLES = [
+  {
+    title: 'IBM Unveils Next Generation Quantum Processor',
+    publishedAt: '2025-01-09T08:00:00Z',
+    urlToImage: '/api/placeholder/400/300',
+    description: 'New quantum processor achieves record-breaking performance in stability tests.'
+  },
+  {
+    title: 'Microsoft Announces Quantum Cloud Services',
+    publishedAt: '2025-01-08T15:30:00Z',
+    urlToImage: '/api/placeholder/400/300',
+    description: 'Cloud-based quantum computing services now available for enterprise customers.'
+  },
+  {
+    title: 'Quantum Cryptography Makes Major Strides',
+    publishedAt: '2025-01-08T11:45:00Z',
+    urlToImage: '/api/placeholder/400/300',
+    description: 'New quantum encryption method promises unbreakable security for sensitive data.'
+  }
+];
+
 const ArticlePage = () => {
   const { id } = useParams();
   const [article, setArticle] = useState(null);
   const [relatedArticles, setRelatedArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_KEY = import.meta.env.VITE_API_KEY;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Fetch main article
-        const articleResponse = await fetch(
-          `${BASE_URL}/everything?qInTitle=${encodeURIComponent(id)}&apiKey=${API_KEY}`
-        );
-        const articleData = await articleResponse.json();
-
-        if (articleData.articles && articleData.articles.length > 0) {
-          const mainArticle = articleData.articles[0];
-          setArticle({
-            ...mainArticle,
-            readTime: Math.ceil(mainArticle.content?.split(' ').length / 200) || 5
-          });
-
-          // Fetch related articles
-          const relatedResponse = await fetch(
-            `${BASE_URL}/everything?q=${encodeURIComponent(mainArticle.title.split(' ').slice(0, 3).join(' '))}&pageSize=4&apiKey=${API_KEY}`
-          );
-          const relatedData = await relatedResponse.json();
-          setRelatedArticles(relatedData.articles);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
+    // Simulate API loading delay
+    const loadData = async () => {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setArticle(STATIC_ARTICLES[id]);
+      setRelatedArticles(RELATED_ARTICLES);
+      setLoading(false);
     };
 
-    fetchData();
+    loadData();
   }, [id]);
 
   if (loading) {
@@ -88,12 +129,12 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
             <div className="flex items-center justify-between py-4 border-y border-gray-200">
               <div className="flex items-center space-x-4">
                 <img
-                  src={article.urlToImage || '/api/placeholder/40/40'}
+                  src="/api/placeholder/40/40"
                   alt=""
                   className="w-10 h-10 rounded-full"
                 />
                 <div>
-                  <p className="font-medium">{article.author || 'Anonymous'}</p>
+                  <p className="font-medium">{article.author}</p>
                   <p className="text-sm text-gray-500">{article.source.name}</p>
                 </div>
               </div>
@@ -112,7 +153,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
           {/* Featured Image */}
           <div className="mb-8">
             <img
-              src={article.urlToImage || '/api/placeholder/800/400'}
+              src={article.urlToImage}
               alt={article.title}
               className="w-full h-96 object-cover rounded-lg"
             />
@@ -121,11 +162,34 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
           {/* Article Content */}
           <div className="prose max-w-none">
             <p className="text-xl text-gray-700 mb-6">{article.description}</p>
-            <div className="text-gray-700 leading-relaxed space-y-4">
+            <div className="text-gray-700 leading-relaxed space-y-4 whitespace-pre-line">
               {article.content}
             </div>
           </div>
         </article>
+
+        {/* Related Articles */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedArticles.map((related, index) => (
+              <div key={index} className="rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <img
+                  src={related.urlToImage}
+                  alt={related.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="font-semibold mb-2">{related.title}</h3>
+                  <p className="text-gray-600 text-sm">{related.description}</p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    {new Date(related.publishedAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </main>
     </div>
   );
